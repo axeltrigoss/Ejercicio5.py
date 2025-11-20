@@ -1,16 +1,20 @@
-# ejercicio 5
-import heapq  
-from collections import deque  
+#ejercicio 5
+import heapq
+from collections import deque
+
 class Graph:
     def __init__(self):
-        self.vertices = {}  
-        self.adj = {}      
+        self.vertices = {}
+        self.adj = {}
+
+    def add_vertex(self, nombre, tipo):
         self.vertices[nombre] = tipo
         self.adj[nombre] = {}
 
     def add_edge(self, a, b, peso):
         self.adj[a][b] = peso
-        self.adj[b][a] = peso 
+        self.adj[b][a] = peso
+
     def bfs(self, inicio):
         visitados = set()
         q = deque([inicio])
@@ -22,7 +26,8 @@ class Graph:
                 orden.append(v)
                 for vecino in self.adj[v]:
                     q.append(vecino)
-            return orden
+        return orden
+
     def dfs(self, inicio):
         visitados = set()
         stack = [inicio]
@@ -35,6 +40,7 @@ class Graph:
                 for vecino in self.adj[v]:
                     stack.append(vecino)
         return orden
+
     def dijkstra(self, inicio, fin):
         dist = {v: float("inf") for v in self.vertices}
         dist[inicio] = 0
@@ -51,6 +57,7 @@ class Graph:
                     dist[vecino] = nd
                     prev[vecino] = v
                     heapq.heappush(heap, (nd, vecino))
+
         path = []
         actual = fin
         while actual:
@@ -64,6 +71,7 @@ class Graph:
         resultado = []
         for v, peso in self.adj[inicio].items():
             heapq.heappush(edges, (peso, inicio, v))
+
         while edges:
             peso, a, b = heapq.heappop(edges)
             if b not in visitados:
@@ -71,7 +79,10 @@ class Graph:
                 resultado.append((a, b, peso))
                 for v, p in self.adj[b].items():
                     heapq.heappush(edges, (p, b, v))
+
         return resultado
+
+
 g = Graph()
 g.add_vertex("RedHat", "notebook")
 g.add_vertex("Debian", "notebook")
@@ -88,7 +99,9 @@ g.add_vertex("Switch1", "switch")
 g.add_vertex("Switch2", "switch")
 g.add_vertex("MongoDB", "servidor")
 g.add_vertex("Impresora", "impresora")
-             
+
+g.add_vertex("Parrot", "pc")
+
 g.add_edge("RedHat", "Router2", 25)
 g.add_edge("Debian", "Switch1", 17)
 g.add_edge("Ubuntu", "Switch1", 18)
@@ -97,8 +110,7 @@ g.add_edge("Switch1", "Impresora", 22)
 g.add_edge("Impresora", "Mint", 80)
 g.add_edge("Fedora", "Router3", 61)
 g.add_edge("Manjaro", "Router3", 40)
-g.add_edge("Router3", "Parrot", 12)  
-g.add_vertex("Parrot", "pc")
+g.add_edge("Router3", "Parrot", 12)
 
 g.add_edge("Parrot", "Switch2", 12)
 g.add_edge("Switch2", "Arch", 56)
@@ -145,9 +157,10 @@ for pc in candidatos:
         distancia = d
 print(f"\nDesde Switch1 la PC más rápida a MongoDB es {mejor} con distancia {distancia}")
 
-ñg.adj["Impresora"].pop("Switch1")
+g.adj["Impresora"].pop("Switch1")
 g.adj["Switch1"].pop("Impresora")
 
 g.add_edge("Impresora", "Router2", 15)
 print("\nNueva BFS desde RedHat tras mover impresora:")
 print(g.bfs("RedHat"))
+
